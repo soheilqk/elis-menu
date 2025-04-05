@@ -124,7 +124,7 @@ export default function Home() {
             className="mx-auto"
           />
           <p className="text-gray-700 text-lg mt-1">
-            Where every sip tells a story
+            Life is the are of baking
           </p>
         </div>
         <nav className="p-4">
