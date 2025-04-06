@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import MenuCard from "./components/MenuCard";
-import { menuItems, MenuItem } from "./data/menuItems";
+import { supabase, type Category, type Item } from "../lib/supabase";
 
 // Define types for our components
 interface NavLinkProps {
@@ -15,7 +15,8 @@ interface NavLinkProps {
 interface MenuSectionProps {
   id: string;
   title: string;
-  items: MenuItem[];
+  items: Item[];
+  categoryId: number;
 }
 
 // Nav link component to avoid repetition
@@ -35,22 +36,24 @@ const NavLink = ({ id, label, activeSection }: NavLinkProps) => (
 );
 
 // Menu section component to avoid repetition
-const MenuSection = ({ id, title, items }: MenuSectionProps) => (
+const MenuSection = ({ id, title, items, categoryId }: MenuSectionProps) => (
   <section className="mb-16 px-4" id={id}>
     <div className="text-center mb-8">
       <h2 className="text-3xl font-bold text-teal-800 mb-2">{title}</h2>
       <div className="w-24 h-1 bg-teal-500 mx-auto rounded-full"></div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {items.map((item) => (
-        <MenuCard
-          key={item.id}
-          name={item.name}
-          price={item.price}
-          imagePath={item.imagePath}
-          description={item.description}
-        />
-      ))}
+      {items
+        .filter((item) => item.category === categoryId)
+        .map((item) => (
+          <MenuCard
+            key={item.id}
+            name={item.title}
+            price={item.price.toString()}
+            imagePath={item.image_path || "/images/placeholder.jpg"}
+            description={item.description}
+          />
+        ))}
     </div>
   </section>
 );
@@ -59,30 +62,64 @@ const MenuSection = ({ id, title, items }: MenuSectionProps) => (
 interface Section {
   id: string;
   title: string;
-  items: MenuItem[];
+  categoryId: number;
 }
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState("hot-drinks");
+  const [activeSection, setActiveSection] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sections, setSections] = useState<Section[]>([]);
 
-  // Define sections as data to avoid repetition
-  const sections: Section[] = [
-    {
-      id: "hot-drinks",
-      title: "Hot Drinks",
-      items: menuItems.filter((item) => item.category === "hot"),
-    },
-    {
-      id: "cold-drinks",
-      title: "Cold Drinks",
-      items: menuItems.filter((item) => item.category === "cold"),
-    },
-    {
-      id: "cakes",
-      title: "Cakes",
-      items: menuItems.filter((item) => item.category === "cake"),
-    },
-  ];
+  // Fetch data from Supabase
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        // Fetch categories
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from("categories")
+          .select("*")
+          .order("id");
+
+        if (categoriesError) throw categoriesError;
+
+        // Fetch items
+        const { data: itemsData, error: itemsError } = await supabase
+          .from("items")
+          .select("*")
+          .order("id");
+
+        if (itemsError) throw itemsError;
+
+        setCategories(categoriesData || []);
+        setItems(itemsData || []);
+
+        // Create sections from categories
+        const sectionsFromCategories = (categoriesData || []).map(
+          (category) => ({
+            id: `category-${category.id}`,
+            title: category.title,
+            categoryId: category.id,
+          })
+        );
+
+        setSections(sectionsFromCategories);
+
+        // Set initial active section if we have categories
+        if (sectionsFromCategories.length > 0) {
+          setActiveSection(sectionsFromCategories[0].id);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Add scroll padding to account for the sticky header
@@ -110,7 +147,18 @@ export default function Home() {
         observer.unobserve(section);
       });
     };
-  }, []);
+  }, [sections]); // Re-setup observer when sections change
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-teal-50 to-teal-100">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-teal-800 text-lg">Loading menu...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100">
@@ -124,7 +172,7 @@ export default function Home() {
             className="mx-auto"
           />
           <p className="text-gray-700 text-lg mt-1">
-            Life is the are of baking
+            Life is the art of baking
           </p>
         </div>
         <nav className="p-4">
@@ -142,15 +190,14 @@ export default function Home() {
       </header>
 
       <div className="max-w-4xl mx-auto pb-16">
-        {/* Navigation Menu */}
-
         {/* Menu Sections */}
         {sections.map((section) => (
           <MenuSection
             key={section.id}
             id={section.id}
             title={section.title}
-            items={section.items}
+            items={items}
+            categoryId={section.categoryId}
           />
         ))}
       </div>
