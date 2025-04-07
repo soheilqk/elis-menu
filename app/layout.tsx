@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Eli's Coffee Shop",
-  description: "Where every sip tells a story",
+  title: "Eli's Cake Cafe",
+  description: "Life is the art of baking",
 };
 
 export default function RootLayout({
