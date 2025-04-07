@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import MenuCard from "./components/MenuCard";
 import { supabase, type Category, type Item } from "../lib/supabase";
@@ -9,7 +6,7 @@ import { supabase, type Category, type Item } from "../lib/supabase";
 interface NavLinkProps {
   id: string;
   label: string;
-  activeSection: string;
+  // activeSection: string; // Removed for SSR
 }
 
 interface MenuSectionProps {
@@ -20,22 +17,19 @@ interface MenuSectionProps {
 }
 
 // Nav link component to avoid repetition
-const NavLink = ({ id, label, activeSection }: NavLinkProps) => (
+// Removed activeSection logic
+const NavLink = ({ id, label }: NavLinkProps) => (
   <li>
     <a
       href={`#${id}`}
-      className={`transition-colors duration-300 ${
-        activeSection === id
-          ? "text-teal-500 font-bold border-b-2 border-teal-500"
-          : "text-teal-700 hover:text-teal-900 font-medium"
-      }`}
+      className="transition-colors duration-300 text-teal-700 hover:text-teal-900 font-medium"
     >
       {label}
     </a>
   </li>
 );
 
-// Menu section component to avoid repetition
+// Menu section component (unchanged conceptually, but used with SSR data)
 const MenuSection = ({ id, title, items, categoryId }: MenuSectionProps) => (
   <section className="mb-16 px-4" id={id}>
     <div className="text-center mb-8">
@@ -58,107 +52,80 @@ const MenuSection = ({ id, title, items, categoryId }: MenuSectionProps) => (
   </section>
 );
 
-// Define interface for section objects
+// Define interface for section objects (remains the same)
 interface Section {
   id: string;
   title: string;
   categoryId: number;
 }
 
-export default function Home() {
-  const [activeSection, setActiveSection] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sections, setSections] = useState<Section[]>([]);
+// Make the component async for server-side data fetching
+export default async function Home() {
+  let categories: Category[] = [];
+  let items: Item[] = [];
+  let sections: Section[] = [];
+  let errorFetching: boolean = false;
 
-  // Fetch data from Supabase
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      try {
-        // Fetch categories
-        const { data: categoriesData, error: categoriesError } = await supabase
-          .from("categories")
-          .select("*")
-          .order("id");
+  // Fetch data directly on the server
+  try {
+    // Fetch categories
+    const { data: categoriesData, error: categoriesError } = await supabase
+      .from("categories")
+      .select("*")
+      .order("id");
 
-        if (categoriesError) throw categoriesError;
+    if (categoriesError) throw categoriesError;
+    categories = categoriesData || [];
 
-        // Fetch items
-        const { data: itemsData, error: itemsError } = await supabase
-          .from("items")
-          .select("*")
-          .order("id");
+    // Fetch items
+    const { data: itemsData, error: itemsError } = await supabase
+      .from("items")
+      .select("*")
+      .order("id");
 
-        if (itemsError) throw itemsError;
+    if (itemsError) throw itemsError;
+    items = itemsData || [];
 
-        setCategories(categoriesData || []);
-        setItems(itemsData || []);
+    // Create sections from categories
+    sections = (categoriesData || []).map((category) => ({
+      id: `category-${category.id}`,
+      title: category.title,
+      categoryId: category.id,
+    }));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    // Set a flag to display an error message or handle appropriately
+    errorFetching = true;
+    // Optionally re-throw or handle specific errors differently
+  }
 
-        // Create sections from categories
-        const sectionsFromCategories = (categoriesData || []).map(
-          (category) => ({
-            id: `category-${category.id}`,
-            title: category.title,
-            categoryId: category.id,
-          })
-        );
+  // Add scroll padding directly in the component (if still needed)
+  // Note: This style manipulation might be better handled in CSS or a layout component
+  // but keeping it here to show where equivalent logic might go.
+  // However, direct DOM manipulation like this won't work server-side.
+  // Consider moving this to CSS or a client component if dynamic padding is essential.
+  // useEffect(() => {
+  //   document.documentElement.style.scrollPaddingTop = "180px";
+  // }, []); // This useEffect logic is removed as it's client-side
 
-        setSections(sectionsFromCategories);
-
-        // Set initial active section if we have categories
-        if (sectionsFromCategories.length > 0) {
-          setActiveSection(sectionsFromCategories[0].id);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    // Add scroll padding to account for the sticky header
-    // Increase padding to account for the full header (logo + navigation)
-    document.documentElement.style.scrollPaddingTop = "180px";
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    const sectionElements = document.querySelectorAll("section[id]");
-    sectionElements.forEach((section) => {
-      observer.observe(section);
-    });
-
-    return () => {
-      sectionElements.forEach((section) => {
-        observer.unobserve(section);
-      });
-    };
-  }, [sections]); // Re-setup observer when sections change
-
-  if (loading) {
+  // Handle potential data fetching errors
+  if (errorFetching) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-teal-50 to-teal-100">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-teal-800 text-lg">Loading menu...</p>
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-red-50 to-red-100">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+          <h1 className="text-2xl font-bold text-red-700 mb-4">
+            Error Loading Menu
+          </h1>
+          <p className="text-red-600">
+            Sorry, we couldn't load the menu data at this time. Please try again
+            later.
+          </p>
         </div>
       </div>
     );
   }
+
+  // No loading state needed anymore
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100">
@@ -182,7 +149,7 @@ export default function Home() {
                 key={section.id}
                 id={section.id}
                 label={section.title}
-                activeSection={activeSection}
+                // activeSection prop removed
               />
             ))}
           </ul>

@@ -51,3 +51,8 @@ body {
 [dir="rtl"] h3 {
   font-family: "Pacifico", cursive;
 }
+
+/* Add global scroll padding for sticky header */
+html {
+  scroll-padding-top: 180px;
+}

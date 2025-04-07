@@ -1,10 +1,17 @@
 import "./globals.css";
-import { Pacifico } from "next/font/google";
+import { Pacifico, Inter } from "next/font/google";
 
 const pacifico = Pacifico({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
+  variable: "--font-pacifico",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata = {
@@ -18,7 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="rtl">
+    <html
+      lang="en"
+      dir="rtl"
+      className={`${pacifico.variable} ${inter.variable}`}
+    >
       <body className={pacifico.className}>{children}</body>
     </html>
   );

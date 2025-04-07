@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import { supabase, type Category, type Item } from "@/lib/supabase";
 import Link from "next/link";
 
+// Add global styles for form inputs
+const inputStyles =
+  "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500";
+const selectStyles =
+  "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500";
+const textareaStyles =
+  "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500";
+
 export default function AdminPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<Item[]>([]);
@@ -50,7 +58,14 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
         <header className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-teal-800">Admin Panel</h1>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                <span className="font-[var(--font-pacifico)] text-teal-700">
+                  Eli's Coffee Shop
+                </span>
+                <span className="font-normal text-xl"> - Admin Panel</span>
+              </h1>
+            </div>
             <Link
               href="/"
               className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
@@ -66,8 +81,8 @@ export default function AdminPage() {
                 onClick={() => setActiveTab("categories")}
                 className={`mr-8 py-4 px-1 ${
                   activeTab === "categories"
-                    ? "border-b-2 border-teal-500 text-teal-600 font-medium"
-                    : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-b-2 border-teal-500 text-teal-800 font-medium"
+                    : "text-gray-700 hover:text-gray-900 hover:border-gray-300"
                 }`}
               >
                 Categories
@@ -76,8 +91,8 @@ export default function AdminPage() {
                 onClick={() => setActiveTab("items")}
                 className={`py-4 px-1 ${
                   activeTab === "items"
-                    ? "border-b-2 border-teal-500 text-teal-600 font-medium"
-                    : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-b-2 border-teal-500 text-teal-800 font-medium"
+                    : "text-gray-700 hover:text-gray-900 hover:border-gray-300"
                 }`}
               >
                 Menu Items
@@ -191,7 +206,9 @@ function CategoriesManager({
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Manage Categories</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-900">
+        Manage Categories
+      </h2>
 
       {/* Add Category Form */}
       <form onSubmit={handleAddCategory} className="mb-8 flex gap-2">
@@ -200,7 +217,7 @@ function CategoriesManager({
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
           placeholder="New category title"
-          className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className={`flex-1 ${inputStyles}`}
           required
         />
         <button
@@ -217,7 +234,9 @@ function CategoriesManager({
           onSubmit={handleUpdateCategory}
           className="mb-8 bg-gray-50 p-4 rounded-md"
         >
-          <h3 className="text-lg font-medium mb-2">Edit Category</h3>
+          <h3 className="text-lg font-medium mb-2 text-gray-900">
+            Edit Category
+          </h3>
           <div className="flex gap-2">
             <input
               type="text"
@@ -228,7 +247,7 @@ function CategoriesManager({
                   title: e.target.value,
                 })
               }
-              className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className={`flex-1 ${inputStyles}`}
               required
             />
             <button
@@ -253,16 +272,13 @@ function CategoriesManager({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Title
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created At
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -270,35 +286,34 @@ function CategoriesManager({
           <tbody className="bg-white divide-y divide-gray-200">
             {categories.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={3} className="px-6 py-4 text-center text-gray-500">
                   No categories found. Add your first category above.
                 </td>
               </tr>
             ) : (
               categories.map((category) => (
                 <tr key={category.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
                     {category.id}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
                     {category.title}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(category.created_at).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => setEditingCategory(category)}
-                      className="text-teal-600 hover:text-teal-900 mr-4"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCategory(category.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center justify-end space-x-4">
+                      <button
+                        onClick={() => setEditingCategory(category)}
+                        className="text-teal-600 hover:text-teal-900"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -526,7 +541,9 @@ function ItemsManager({
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Manage Menu Items</h2>
+        <h2 className="text-xl font-semibold text-gray-900">
+          Manage Menu Items
+        </h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
@@ -541,7 +558,7 @@ function ItemsManager({
           onSubmit={handleSubmit}
           className="mb-8 bg-gray-50 p-4 rounded-md"
         >
-          <h3 className="text-lg font-medium mb-4">
+          <h3 className="text-lg font-medium mb-4 text-gray-900">
             {editingItem ? "Edit Item" : "Add New Item"}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -555,7 +572,7 @@ function ItemsManager({
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className={inputStyles}
                 required
               />
             </div>
@@ -568,7 +585,7 @@ function ItemsManager({
                 onChange={(e) =>
                   setFormData({ ...formData, category: Number(e.target.value) })
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className={selectStyles}
                 required
               >
                 <option value="">Select a category</option>
@@ -591,7 +608,7 @@ function ItemsManager({
                 }
                 min="0"
                 step="1"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className={inputStyles}
               />
             </div>
 
@@ -675,8 +692,10 @@ function ItemsManager({
                 }
                 disabled={!!imageFile}
                 placeholder="/images/..."
-                className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                  imageFile ? "bg-gray-100 cursor-not-allowed" : ""
+                className={`${inputStyles} ${
+                  imageFile
+                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                    : ""
                 }`}
               />
               {imageFile && (
@@ -696,7 +715,7 @@ function ItemsManager({
                   setFormData({ ...formData, description: e.target.value })
                 }
                 rows={3}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className={textareaStyles}
               ></textarea>
             </div>
           </div>
@@ -730,22 +749,22 @@ function ItemsManager({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Image
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Title
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Category
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -760,49 +779,55 @@ function ItemsManager({
             ) : (
               items.map((item) => (
                 <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
                     {item.id}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
                     {item.image_path ? (
-                      <img
-                        src={item.image_path}
-                        alt={item.title}
-                        className="h-10 w-10 rounded-md object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "/images/placeholder.jpg";
-                        }}
-                      />
+                      <div className="flex justify-start">
+                        <img
+                          src={item.image_path}
+                          alt={item.title}
+                          className="h-10 w-10 rounded-md object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "/images/placeholder.jpg";
+                          }}
+                        />
+                      </div>
                     ) : (
-                      <div className="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center text-gray-500">
-                        <span className="text-xs">No img</span>
+                      <div className="flex justify-start">
+                        <div className="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center text-gray-500">
+                          <span className="text-xs">No img</span>
+                        </div>
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
                     {item.title}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
                     {categories.find((c) => c.id === item.category)?.title ||
                       "Unknown"}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
                     {item.price}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleEditItem(item)}
-                      className="text-teal-600 hover:text-teal-900 mr-4"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteItem(item.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex items-center justify-end space-x-4">
+                      <button
+                        onClick={() => handleEditItem(item)}
+                        className="text-teal-600 hover:text-teal-900"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
