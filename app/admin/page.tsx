@@ -57,7 +57,7 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
         <header className="mb-8">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-6 flex-col-reverse sm:flex-row gap-4 sm:gap-0 text-center sm:text-left">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
                 <span className="font-[var(--font-pacifico)] text-teal-700">
@@ -68,7 +68,7 @@ export default function AdminPage() {
             </div>
             <Link
               href="/"
-              className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
+              className="bg-teal-600 text-white text-center px-2 py-2 rounded-md hover:bg-teal-700 transition-colors text-xs sm:px-4"
             >
               Back to Website
             </Link>
@@ -76,10 +76,10 @@ export default function AdminPage() {
 
           {/* Tabs */}
           <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
+            <nav className="flex -mb-px gap-4">
               <button
                 onClick={() => setActiveTab("categories")}
-                className={`mr-8 py-4 px-1 ${
+                className={` py-4 px-1 ${
                   activeTab === "categories"
                     ? "border-b-2 border-teal-500 text-teal-800 font-medium"
                     : "text-gray-700 hover:text-gray-900 hover:border-gray-300"
@@ -222,7 +222,7 @@ function CategoriesManager({
         />
         <button
           type="submit"
-          className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
+          className="bg-teal-600 text-white px-2 py-2 rounded-md hover:bg-teal-700 transition-colors text-xs sm:text-base sm:px-4"
         >
           Add Category
         </button>
@@ -268,11 +268,11 @@ function CategoriesManager({
       )}
 
       {/* Categories List */}
-      <div className="bg-white rounded-md">
+      <div className="bg-white rounded-md overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                 ID
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -293,7 +293,7 @@ function CategoriesManager({
             ) : (
               categories.map((category) => (
                 <tr key={category.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right hidden sm:table-cell">
                     {category.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
@@ -546,7 +546,7 @@ function ItemsManager({
         </h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors"
+          className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors text-xs sm:text-base"
         >
           {showForm ? "Cancel" : "Add New Item"}
         </button>
@@ -745,14 +745,14 @@ function ItemsManager({
       )}
 
       {/* Items List */}
-      <div className="bg-white rounded-md">
+      <div className="bg-white rounded-md overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                 ID
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                 Image
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -761,7 +761,7 @@ function ItemsManager({
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Category
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                 Price
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -779,10 +779,10 @@ function ItemsManager({
             ) : (
               items.map((item) => (
                 <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right hidden sm:table-cell">
                     {item.id}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                  <td className="px-6 py-4 whitespace-nowrap text-right hidden sm:table-cell">
                     {item.image_path ? (
                       <div className="flex justify-start">
                         <img
@@ -810,7 +810,7 @@ function ItemsManager({
                     {categories.find((c) => c.id === item.category)?.title ||
                       "Unknown"}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right hidden sm:table-cell">
                     {item.price}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
