@@ -172,4 +172,4 @@ export default async function Home() {
   );
 }
 
-export const revalidate = 60 * 10;
+export const revalidate = 60 * 60; // 1 hour
