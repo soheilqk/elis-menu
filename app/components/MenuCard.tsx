@@ -17,13 +17,13 @@ export default function MenuCard({
     <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
       <div className="relative w-full aspect-[1/1]">
         <Image
-          src={
-            imagePath == "none" ? "/images/drinks/cappuccino.jpg" : imagePath
-          }
+          src={imagePath ?? "logo.png"}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
+          placeholder="blur"
+          blurDataURL={imagePath ?? "logo.png"}
           priority
         />
       </div>
