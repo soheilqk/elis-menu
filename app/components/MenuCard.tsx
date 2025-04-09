@@ -15,7 +15,7 @@ export default function MenuCard({
 }: MenuCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
-      <div className="relative w-full aspect-[4/3]">
+      <div className="relative w-full aspect-[1/1]">
         <Image
           src={
             imagePath == "none" ? "/images/drinks/cappuccino.jpg" : imagePath
