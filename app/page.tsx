@@ -2,6 +2,8 @@ import Image from "next/image";
 import MenuCard from "./components/MenuCard";
 import { supabase, type Category, type Item } from "../lib/supabase";
 
+export const revalidate = 60 * 60; // 1 hour
+
 // Define types for our components
 interface NavLinkProps {
   id: string;
@@ -171,5 +173,3 @@ export default async function Home() {
     </main>
   );
 }
-
-export const revalidate = 60 * 60; // 1 hour
