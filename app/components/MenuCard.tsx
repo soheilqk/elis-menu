@@ -29,13 +29,15 @@ export default function MenuCard({
       </div>
       <div className="p-4">
         <div className="flex">
-          <h3 className="text-lg font-semibold text-teal-800 mb-1 grow">
+          <h3 className="text-xl font-semibold text-teal-800 mb-1 grow !font-amiri">
             {name}
           </h3>
-          <p className="text-teal-800 font-bold">{price} T</p>
+          <p className="text-teal-800 font-bold !font-pacifico">{price} T</p>
         </div>
         {description && (
-          <p className="text-gray-600 text-sm mb-2">{description}</p>
+          <p className="text-gray-600 text-sm mb-2 !font-amiri">
+            {description}
+          </p>
         )}
       </div>
     </div>

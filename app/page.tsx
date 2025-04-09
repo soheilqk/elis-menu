@@ -24,7 +24,7 @@ const NavLink = ({ id, label }: NavLinkProps) => (
   <li>
     <a
       href={`#${id}`}
-      className="transition-colors duration-300 text-teal-700 hover:text-teal-900 font-medium"
+      className="transition-colors duration-300 text-teal-700 hover:text-teal-900 font-medium !font-pacifico"
     >
       {label}
     </a>
@@ -140,7 +140,7 @@ export default async function Home() {
             height={100}
             className="mx-auto"
           />
-          <p className="text-gray-700 text-lg mt-1">
+          <p className="text-gray-700 text-lg mt-1 !font-pacifico">
             Life is the art of baking
           </p>
         </div>
