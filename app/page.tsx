@@ -131,14 +131,13 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100">
-      <header className="sticky top-0 z-50 px-4 pt-4 pb-0 text-center bg-white shadow-md rounded-b-2xl mb-4">
-        <div className="max-w-4xl mx-auto ">
+      <header className="sticky top-0 z-50 px-4 pt-2 pb-0 text-center bg-white shadow-md rounded-b-2xl mb-4">
+        <div className="max-w-4xl px-2 mx-auto mb-2 flex flex-row-reverse justify-between items-end">
           <Image
             src="/logo.png"
             alt="Eli's Coffee Shop"
             width={100}
             height={100}
-            className="mx-auto"
           />
           <p className="text-gray-700 text-lg mt-1 !font-pacifico">
             Life is the art of baking
