@@ -36,6 +36,7 @@ export default function RootLayout({
     <html lang="en" dir="rtl">
       <body
         className={`${pacifico.variable} ${inter.variable} ${amiri.variable}`}
+        suppressHydrationWarning
       >
         {children}
       </body>
