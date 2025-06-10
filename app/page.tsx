@@ -144,7 +144,7 @@ export default async function Home() {
           </p>
         </div>
         <nav className="p-4">
-          <ul className="flex justify-center space-x-8 md:space-x-16">
+          <ul dir="ltr" className="flex justify-center space-x-8 md:space-x-16">
             {sections.map((section) => (
               <NavLink
                 key={section.id}
